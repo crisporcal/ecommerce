@@ -2,7 +2,7 @@
 # @Author: exc-cpereira
 # @Date:   2025-08-08 14:08:01
 # @Last Modified by:   exc-cpereira
-# @Last Modified time: 2025-08-08 15:29:05
+# @Last Modified time: 2025-08-22 11:30:30
 """
 URL configuration for backend project.
 
@@ -21,14 +21,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
+from users.views import CustomTokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('products.urls')),  # <- acá llamamos a la API de productos
     path('api/', include('orders.urls')),    # <- acá llamamos a la API de órdenes
+    path("api/auth/login/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/auth/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/auth/", include("users.urls")),
 ]
 
-urlpatterns += [
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-]
+# urlpatterns += [
+#     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
+# ]

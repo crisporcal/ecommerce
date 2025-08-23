@@ -2,9 +2,10 @@
 # @Author: exc-cpereira
 # @Date:   2025-08-08 14:50:37
 # @Last Modified by:   exc-cpereira
-# @Last Modified time: 2025-08-19 09:54:52
+# @Last Modified time: 2025-08-22 11:01:38
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from django.conf import settings
 from products.models import Product
 
 class Order(models.Model):
@@ -16,7 +17,8 @@ class Order(models.Model):
         ('cancelled', 'Cancelado'),
     ]
     
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # puede ser invitado (null)
+    # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)  # puede ser invitado (null)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # Datos para envío (por si es invitado, o para edición)

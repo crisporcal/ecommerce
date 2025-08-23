@@ -2,7 +2,8 @@
 # @Author: exc-cpereira
 # @Date:   2025-08-08 14:08:01
 # @Last Modified by:   exc-cpereira
-# @Last Modified time: 2025-08-19 11:48:51
+# @Last Modified time: 2025-08-22 12:21:01
+from datetime import timedelta
 from decouple import config
 """
 Django settings for backend project.
@@ -48,10 +49,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework.authtoken',
+    "rest_framework_simplejwt",
+    
 
     # tu apps
     'products',
     'orders',
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -88,12 +92,25 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ecommerce_db',   # crea esta db en postgres
+        'USER': 'postgres',       # tu usuario
+        'PASSWORD': 'postgres', # tu password
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
+AUTH_USER_MODEL = "users.User"
 
 
 # Password validation
@@ -142,7 +159,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -153,6 +171,16 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+CORS_ALLOW_CREDENTIALS = True
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
